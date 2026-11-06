@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__atlassian__getAccessibleAtlassianResources",
+      "mcp__atlassian__searchJiraIssuesUsingJql",
+      "Bash(jq -r .[].type /Users/sander/.claude/projects/-Users-sander-projects/716cba22-1641-46e8-babe-9b28fad0ef4f/tool-results/mcp-atlassian-searchJiraIssuesUsingJql-1785832756178.txt)",
+      "Bash(jq -r .[1].text /Users/sander/.claude/projects/-Users-sander-projects/716cba22-1641-46e8-babe-9b28fad0ef4f/tool-results/mcp-atlassian-searchJiraIssuesUsingJql-1785832756178.txt)",
+      "mcp__atlassian__getTransitionsForJiraIssue",
+      "mcp__atlassian__transitionJiraIssue",
+      "Bash(find / -maxdepth 3 -iname \"*new-front*\")",
+      "Read(//Users/sander/**)",
+      "mcp__atlassian__getJiraIssue",
+      "Bash(echo \"---nonNullRecord$---\")",
+      "Bash(grep -rn \"\\\\.property\\\\`\" libs --include=\"*.ts\")",
+      "Bash(python3 *)",
+      "Bash(docker exec mycellhub-backend-core *)",
+      "Bash(docker exec mycellhub-postgresql psql *)",
+      "mcp__github__list_pull_requests",
+      "mcp__github__get_me",
+      "mcp__github__search_repositories",
+      "mcp__github__get_teams",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/api/health)",
+      "Bash(lsof -iTCP -sTCP:LISTEN -P)",
+      "Bash(curl -sk -o /dev/null -w \"%{http_code}\\\\n\" https://backend.mycellhub.dev/)",
+      "Bash(curl -sk https://backend.mycellhub.dev/api/corrective-and-preventive-action-model/definition -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(curl -sk https://backend.mycellhub.dev/corrective-and-preventive-action-model/definition -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(curl -sk https://backend.mycellhub.dev/ -w \"\\\\nHTTP:%{http_code}\\\\n\")",
+      "Bash(git checkout *)",
+      "Bash(git pull *)",
+      "mcp__github__search_pull_requests",
+      "Bash(xargs -I{} sh -c 'grep -l \"custom-record-definition-view-configuration\" {} 2>/dev/null')",
+      "Bash(find '/Users/sander/Library/Application Support' -iname *custom-record-definition-view-configuration*)"
+    ]
+  }
+}
