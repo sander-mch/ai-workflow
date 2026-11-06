@@ -4,82 +4,56 @@ Shared Claude Code setup for the MES workspace: the rules, skills and agents we 
 
 The idea in one line: **the best code is the code you never write, but never skip reading, testing or safety.**
 
-## How it's packaged
+## Install
 
-This repo is a Claude Code **plugin** and its own **marketplace** (`.claude-plugin/`). Two parts reach you in different ways:
+You need read access to `sander-mch/ai-workflow` on GitHub. No clone needed:
 
-| What | Lives in | Reaches you through |
-|---|---|---|
-| Skills and agents | `skills/`, `agents/` | the `ai-workflow` plugin, installed once for your user |
-| Rules (`AGENTS.md`) and the Jira/Notion deny list (`settings.json`) | this repo | links in your workspace folder, made by `setup.sh` |
-
-Start Claude Code in the workspace folder, the one that holds all the repos:
-
-```
-projects/                      ← start Claude Code here
-├── .claude/
-│   └── settings.json  → ai-workflow/settings.json   (symlink: deny list)
-├── AGENTS.md          → ai-workflow/AGENTS.md       (symlink: shared rules)
-├── CLAUDE.md          → ai-workflow/CLAUDE.md       (symlink: imports AGENTS.md)
-├── ai-workflow/               ← this repo
-│   ├── .claude-plugin/        plugin.json, marketplace.json
-│   ├── setup.sh               creates the links above
-│   ├── AGENTS.md
-│   ├── CLAUDE.md
-│   ├── settings.json
-│   ├── skills/                architect, build, review
-│   └── agents/                junior, tester, skeptic
-├── frontend/                  has its own CLAUDE.md (commands, conventions)
-├── backend/                   has its own CLAUDE.md
-├── mes-agentic-harness/       has its own CLAUDE.md
-└── mch1/                      legacy system, read-only reference
+```bash
+claude plugin marketplace add sander-mch/ai-workflow
+claude plugin install ai-workflow@ai-workflow
 ```
 
-## Setup
+Or inside Claude Code: `/plugin marketplace add sander-mch/ai-workflow`, then `/plugin install ai-workflow@ai-workflow`.
 
-1. **Clone the repos side by side** in one folder, e.g. `~/projects`: `ai-workflow`, `frontend`, `backend` and `mes-agentic-harness`. Agents find the repos by folder name. If you keep a repo elsewhere, link it in: `ln -s ~/code/frontend ~/projects/frontend`.
-
-2. **Install the plugin** (once per machine; you need read access to `sander-mch/ai-workflow` on GitHub):
-
-   ```bash
-   claude plugin marketplace add sander-mch/ai-workflow
-   claude plugin install ai-workflow@ai-workflow
-   ```
-
-   Or inside Claude Code: `/plugin marketplace add sander-mch/ai-workflow`, then `/plugin install ai-workflow@ai-workflow`.
-
-3. **Link the rules and settings** into the workspace folder:
-
-   ```bash
-   bash ~/projects/ai-workflow/setup.sh
-   ```
-
-   Safe to run again. If you ran an older version that linked `.claude/skills` and `.claude/agents`, it removes those links, so skills don't show up twice.
-
-4. **Start Claude Code in `~/projects`** and check:
-   - `/plugin` lists `ai-workflow@ai-workflow` as enabled
-   - `/agents` lists `junior`, `tester` and `skeptic`
-   - typing `/ai-workflow:` shows `architect`, `build` and `review`
-   - `/permissions` lists the Jira and Notion write tools as denied
+The plugin is installed for your user, so it works wherever you start Claude Code. Check:
+- `/plugin` lists `ai-workflow@ai-workflow` as enabled
+- `/agents` lists `junior`, `tester` and `skeptic`
+- typing `/ai-workflow:` shows `architect`, `build` and `review`
 
 `skeptic` and `tester` use skills from the `mes-agentic-harness` plugin, so install that plugin too.
 
-The plugin is installed for your user, so the skills and agents work in any folder. The rules and the deny list only apply when you start Claude Code in the workspace folder (or a folder below it, for the rules).
+### Rules and Jira/Notion deny list
+
+A plugin ships skills and agents, but not always-on rules or permissions. Add these once yourself:
+
+- **Rules:** copy [`AGENTS.md`](AGENTS.md) into `~/.claude/CLAUDE.md` (or a `CLAUDE.md` in the folder you work from).
+- **Deny list:** copy the `permissions.deny` list from [`settings.json`](settings.json) into `~/.claude/settings.json`. Then `/permissions` lists the Jira and Notion write tools as denied.
 
 ### Updates
 
-- **Skills and agents:** run `/plugin` and update `ai-workflow`, or turn on auto-update for the marketplace there.
-- **Rules and settings:** `git pull` in `ai-workflow/`; the links pick it up.
+Run `/plugin` and update `ai-workflow`, or turn on auto-update for the marketplace there.
+
+### Recommended layout
+
+Not required, but cross-repo work goes best when the repos sit side by side and you start Claude Code in the folder above them. Agents then find the repos by folder name:
+
+```
+projects/              ← start Claude Code here for cross-repo work
+├── frontend/          has its own CLAUDE.md (commands, conventions)
+├── backend/           has its own CLAUDE.md
+├── mes-agentic-harness/  has its own CLAUDE.md
+└── mch1/              legacy system, read-only reference
+```
 
 ### Changing the plugin
 
-Edit the skills or agents, **bump `version` in `.claude-plugin/plugin.json`**, and open a PR. Without a version bump, installed copies may not update.
+Clone this repo, edit the skills or agents, **bump `version` in `.claude-plugin/plugin.json`**, and open a PR. Without a version bump, installed copies may not update.
 
-To try a change before merging, start Claude Code with your local checkout loaded for that session: `claude --plugin-dir ~/projects/ai-workflow`. Check the manifests with `claude plugin validate ~/projects/ai-workflow`.
+To try a change before merging, load your checkout for one session with `claude --plugin-dir ./ai-workflow`. Check the manifests with `claude plugin validate ./ai-workflow`.
 
 ### Jira and Notion
 
-Agents **read** Jira and Notion (tickets, acceptance criteria, linked pages) but never write to them. Writing is blocked by the deny list in `settings.json`; anything that should be posted, the agent drafts for you to post.
+Agents **read** Jira and Notion (tickets, acceptance criteria, linked pages) but never write to them. Writing is blocked by the deny list (see [Rules and Jira/Notion deny list](#rules-and-jiranotion-deny-list)); anything that should be posted, the agent drafts for you to post.
 
 | Who | Reads |
 |---|---|
