@@ -2,7 +2,7 @@
 name: architect
 description: >
   Turns a feature request or Jira ticket into a one-page design doc that the
-  tdd skill builds slice by slice: non-goals, what to reuse (including legacy
+  build skill builds slice by slice: non-goals, what to reuse (including legacy
   MCH1), seams, a behaviour table with confirmed values, and slices. Use when
   the user wants to plan, spec or design a feature before building it, gives
   a ticket to "work out" or "break down", asks for a design doc, or says
@@ -21,7 +21,7 @@ You read Jira and Notion; you never write to them.
 
 ## 0. Does this need a doc?
 
-If the change fits in a clear one-line prompt (one component, one rule, obvious seam), say so, suggest the `/tdd` prompt to use instead, and stop. A doc is for features with several behaviours, more than one seam, or an undecided interface.
+If the change fits in a clear one-line prompt (one component, one rule, obvious seam), say so, suggest the `/build` prompt to use instead, and stop. A doc is for features with several behaviours, more than one seam, or an undecided interface.
 
 ## 1. Read before asking
 
@@ -47,7 +47,7 @@ Stop interviewing when every template section is filled or explicitly marked as 
 
 ## 3. Behaviour table: the user owns the expected values
 
-The `tdd` skill treats each row's expected value as the source of truth for a test. If you invent the value, the test can only confirm your own assumption.
+The `build` skill treats each row's expected value as the source of truth for a test. If you invent the value, the test can only confirm your own assumption.
 - You may **propose** rows (Given / When) and a likely Then, but mark each proposed Then as `(proposed)` and ask the user to confirm or correct it.
 - A row whose Then the user has not confirmed goes to **Open questions**, not the table.
 - Use real literals ("2026-03-01", "lot L-0042"), never "a valid date".
@@ -73,7 +73,7 @@ Before saving, reread the doc and remove anything speculative: future phases, "n
 - Path of the doc
 - Open questions that still need an answer, if any
 - The prompt to start building:
-  `/tdd implement slice 1 of docs/design/<feature>.md`
+  `/build implement slice 1 of docs/design/<feature>.md`
 - If there is a ticket: a **draft** comment for it (a two-line summary, a link to the doc, the slices as a checklist) for the user to post. Never post it, create subtasks or change the ticket yourself.
 
-Don't start implementing, even if asked to "just continue". Implementation goes through `/tdd`, preferably in a fresh session.
+Don't start implementing, even if asked to "just continue". Implementation goes through `/build`, preferably in a fresh session.
