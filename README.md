@@ -4,32 +4,31 @@ Shared Claude Code setup for the MES workspace: the rules, skills and agents we 
 
 The idea in one line: **the best code is the code you never write, but never skip reading, testing or safety.**
 
-## Workspace layout
+## How it's packaged
 
-Clone this repo next to the others:
+This repo is a Claude Code **plugin** and its own **marketplace** (`.claude-plugin/`). Two parts reach you in different ways:
+
+| What | Lives in | Reaches you through |
+|---|---|---|
+| Skills and agents | `skills/`, `agents/` | the `ai-workflow` plugin, installed once for your user |
+| Rules (`AGENTS.md`) and the Jira/Notion deny list (`settings.json`) | this repo | links in your workspace folder, made by `setup.sh` |
+
+Start Claude Code in the workspace folder, the one that holds all the repos:
 
 ```
-workspace/                     ← start Claude Code here for cross-repo work
-├── .claude/                   real folder, made by setup.sh
-│   ├── skills/        → ai-workflow/skills          (symlink)
-│   ├── agents/        → ai-workflow/agents          (symlink)
-│   └── settings.json  → ai-workflow/settings.json   (symlink)
-├── AGENTS.md     → ai-workflow/AGENTS.md    (symlink)
-├── CLAUDE.md     → ai-workflow/CLAUDE.md    (symlink)
+projects/                      ← start Claude Code here
+├── .claude/
+│   └── settings.json  → ai-workflow/settings.json   (symlink: deny list)
+├── AGENTS.md          → ai-workflow/AGENTS.md       (symlink: shared rules)
+├── CLAUDE.md          → ai-workflow/CLAUDE.md       (symlink: imports AGENTS.md)
 ├── ai-workflow/               ← this repo
-│   ├── README.md
+│   ├── .claude-plugin/        plugin.json, marketplace.json
 │   ├── setup.sh               creates the links above
-│   ├── AGENTS.md              shared always-on rules
-│   ├── CLAUDE.md              imports AGENTS.md for Claude Code
-│   ├── settings.json          Jira/Notion write deny list, hooks
-│   ├── skills/
-│   │   ├── architect/         SKILL.md + template.md
-│   │   ├── build/             SKILL.md
-│   │   └── review/            SKILL.md
-│   └── agents/
-│       ├── junior.md
-│       ├── tester.md
-│       └── skeptic.md
+│   ├── AGENTS.md
+│   ├── CLAUDE.md
+│   ├── settings.json
+│   ├── skills/                architect, build, review
+│   └── agents/                junior, tester, skeptic
 ├── frontend/                  has its own CLAUDE.md (commands, conventions)
 ├── backend/                   has its own CLAUDE.md
 ├── mes-agentic-harness/       has its own CLAUDE.md
@@ -38,26 +37,49 @@ workspace/                     ← start Claude Code here for cross-repo work
 
 ## Setup
 
-Clone `ai-workflow`, `frontend`, `backend` and `mes-agentic-harness` into the same `workspace/` folder. Agents find the repos by folder name. If you keep a repo somewhere else, link it in instead: `ln -s ~/code/frontend workspace/frontend`.
+1. **Clone the repos side by side** in one folder, e.g. `~/projects`: `ai-workflow`, `frontend`, `backend` and `mes-agentic-harness`. Agents find the repos by folder name. If you keep a repo elsewhere, link it in: `ln -s ~/code/frontend ~/projects/frontend`.
 
-Then run once (from anywhere):
+2. **Install the plugin** (once per machine; you need read access to `sander-mch/ai-workflow` on GitHub):
 
-```bash
-bash ai-workflow/setup.sh
-```
+   ```bash
+   claude plugin marketplace add sander-mch/ai-workflow
+   claude plugin install ai-workflow@ai-workflow
+   ```
 
-It creates `workspace/.claude/` and links `skills`, `agents` and `settings.json` into it, plus `AGENTS.md` and `CLAUDE.md` into `workspace/`. Run it once on a fresh workspace.
+   Or inside Claude Code: `/plugin marketplace add sander-mch/ai-workflow`, then `/plugin install ai-workflow@ai-workflow`.
 
-Then start Claude Code in `workspace/` (or in one of the repos below it) and check:
-- `/agents` lists `junior`, `tester` and `skeptic`
-- typing `/` shows `architect`, `build` and `review`
-- `/permissions` lists the Jira and Notion write tools as denied
+3. **Link the rules and settings** into the workspace folder:
 
-If something is missing, start Claude Code from `workspace/` itself. Updating the workflow is a `git pull` in `ai-workflow/`; the symlinks pick it up.
+   ```bash
+   bash ~/projects/ai-workflow/setup.sh
+   ```
+
+   Safe to run again. If you ran an older version that linked `.claude/skills` and `.claude/agents`, it removes those links, so skills don't show up twice.
+
+4. **Start Claude Code in `~/projects`** and check:
+   - `/plugin` lists `ai-workflow@ai-workflow` as enabled
+   - `/agents` lists `junior`, `tester` and `skeptic`
+   - typing `/ai-workflow:` shows `architect`, `build` and `review`
+   - `/permissions` lists the Jira and Notion write tools as denied
+
+`skeptic` and `tester` use skills from the `mes-agentic-harness` plugin, so install that plugin too.
+
+The plugin is installed for your user, so the skills and agents work in any folder. The rules and the deny list only apply when you start Claude Code in the workspace folder (or a folder below it, for the rules).
+
+### Updates
+
+- **Skills and agents:** run `/plugin` and update `ai-workflow`, or turn on auto-update for the marketplace there.
+- **Rules and settings:** `git pull` in `ai-workflow/`; the links pick it up.
+
+### Changing the plugin
+
+Edit the skills or agents, **bump `version` in `.claude-plugin/plugin.json`**, and open a PR. Without a version bump, installed copies may not update.
+
+To try a change before merging, start Claude Code with your local checkout loaded for that session: `claude --plugin-dir ~/projects/ai-workflow`. Check the manifests with `claude plugin validate ~/projects/ai-workflow`.
 
 ### Jira and Notion
 
-Agents **read** Jira and Notion (tickets, acceptance criteria, linked pages) but never write to them. Writing is blocked in `settings.json`; anything that should be posted, the agent drafts for you to post.
+Agents **read** Jira and Notion (tickets, acceptance criteria, linked pages) but never write to them. Writing is blocked by the deny list in `settings.json`; anything that should be posted, the agent drafts for you to post.
 
 | Who | Reads |
 |---|---|
@@ -67,7 +89,6 @@ Agents **read** Jira and Notion (tickets, acceptance criteria, linked pages) but
 
 Each of us signs in to the Atlassian and Notion MCP servers with our own account. The server names must be `atlassian` and `claude_ai_Notion` (the claude.ai Notion connector) for the tool names in the agent files and deny list to match. Check with `/mcp` after setting them up.
 
-**Prefer it everywhere?** Copy or symlink `skills/*` and `agents/*` into `~/.claude/skills/` and `~/.claude/agents/` instead. Then they're available in every project, not just this workspace.
 
 ## The hierarchy
 
@@ -115,17 +136,17 @@ Helpers only report. All changes go through the main agent, so there's one place
 ### 3. The flow: plan → build → verify → review
 
 ```
-/architect ──► docs/design/<feature>.md
+/ai-workflow:architect ──► docs/design/<feature>.md
                         │  (one page: non-goals, reuse, seams,
                         │   behaviour table, slices)
                         ▼
-/build slice 1 ──► red (tester) ──► green (tester) ──► next slice …
+/ai-workflow:build slice 1 ──► red (tester) ──► green (tester) ──► next slice …
                         │
                         ▼
                     skeptic (one round) ──► MUST FIX → new failing test → fix
                         │
                         ▼
-/review ──► numbered findings, verdict, lean
+/ai-workflow:review ──► numbered findings, verdict, lean
 ```
 
 | Step | Use | Output |
@@ -148,12 +169,14 @@ Small change? Skip the plan and go straight to `/build <what you want>`.
 
 ## Everyday prompts
 
+Plugin skills carry the plugin name: `/build` is typed `/ai-workflow:build`. Claude also picks the skills up on its own from what you ask, without the slash command.
+
 ```text
-/architect operators can record a deviation during a batch step
-/build implement slice 1 of docs/design/batch-deviation.md
-/build fix: expiry date before manufacture date is accepted
-/build add a tooltip to the batch status badge
-/review branch
+/ai-workflow:architect operators can record a deviation during a batch step
+/ai-workflow:build implement slice 1 of docs/design/batch-deviation.md
+/ai-workflow:build fix: expiry date before manufacture date is accepted
+/ai-workflow:build add a tooltip to the batch status badge
+/ai-workflow:review branch
 Use the junior agent to find every place that dispatches saveBatch
 Use the skeptic agent on my uncommitted changes. The requirement was: …
 ```
