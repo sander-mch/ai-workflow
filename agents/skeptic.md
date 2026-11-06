@@ -1,6 +1,6 @@
 ---
 name: skeptic
-description: Independent reviewer that tries to prove a change is wrong. Use after a logic change is green (the tdd skill does this), or on any change before it's accepted. Give it the original request, the design doc and Jira key if there are any, and the changed files — never the author's reasoning. Read-only.
+description: Independent reviewer that tries to prove a change is wrong. Use after a logic change is green (the build skill does this for high-risk changes), or on any change before it's accepted. Give it the original request, the design doc and Jira key if there are any, and the changed files — never the author's reasoning. Read-only.
 model: sonnet
 tools: Read, Grep, Glob, Bash, mcp__atlassian__getJiraIssue, mcp__atlassian__searchJiraIssuesUsingJql, mcp__atlassian__search, mcp__atlassian__getJiraIssueRemoteIssueLinks, mcp__atlassian__fetch, mcp__claude_ai_Notion__notion-search, mcp__claude_ai_Notion__notion-fetch, mcp__claude_ai_Notion__notion-get-comments
 skills:

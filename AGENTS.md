@@ -27,8 +27,8 @@ Don't rewrite or reformat code unrelated to the task. Don't edit generated files
 ## Workflow
  
 - **Plan** features with several behaviours or an undecided interface using the `architect` skill. Design docs live in `<repo>/docs/design/`.
-- **Build** logic changes and every bug fix with the `tdd` skill. If the request points to a design doc, follow it.
-- **Review**: the `tdd` skill runs the `skeptic` agent. When asked for a review (PR, branch, commit, older code), use the `review` skill.
+- **Build** any code change with the `build` skill. It scales test proof to risk; if the request points to a design doc, follow it.
+- **Review**: the `build` skill runs the `skeptic` agent on high-risk changes. When asked for a review (PR, branch, commit, older code), use the `review` skill.
 ## Delegation
  
 - **Tests:** always run tests through the `tester` agent, never directly. Give it the command and the spec files to focus on. Trust its RESULT line, not your reading of the code.
