@@ -1,0 +1,8 @@
+{
+    "name": "ai-workflow",
+    "version": "0.1.0",
+    "description": "Lazy-senior workflow for the MES workspace: architect, build and review skills plus junior, tester and skeptic agents.",
+    "author": { "name": "Sander" },
+    "repository": "https://github.com/sander-mch/ai-workflow",
+    "license": "MIT"
+}

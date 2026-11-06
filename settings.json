@@ -1,17 +1,4 @@
 {
-    "hooks": {
-        "PostToolUse": [
-        {
-            "matcher": "Write|Edit",
-            "hooks": [
-            {
-                "type": "command",
-                "command": "bash /Users/sander/projects/.claude/scripts/live-skeptic-review.sh"
-            }
-            ]
-        }
-        ]
-    }, 
     "permissions": {
         "deny": [
             "mcp__atlassian__createJiraIssue",

@@ -1,0 +1,12 @@
+{
+    "name": "ai-workflow",
+    "description": "Shared Claude Code workflow for the MES workspace",
+    "owner": { "name": "Sander" },
+    "plugins": [
+        {
+        "name": "ai-workflow",
+        "source": "./",
+        "description": "Plan, build and review with proof scaled to risk: /architect, /build, /review and the junior, tester and skeptic agents."
+        }
+    ]
+}
