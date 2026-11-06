@@ -28,7 +28,8 @@ workspace/                     ← start Claude Code here for cross-repo work
 │           └── skeptic.md
 ├── frontend/                  has its own CLAUDE.md (commands, conventions)
 ├── backend/                   has its own CLAUDE.md
-└── mes-agentic-harness/       has its own CLAUDE.md
+├── mes-agentic-harness/       has its own CLAUDE.md
+└── mch1/                      legacy system, read-only reference
 ```
 
 ## Setup
@@ -46,6 +47,18 @@ Then start Claude Code in `workspace/` (or in one of the repos below it) and che
 - typing `/` shows `lazy-architect`, `tdd` and `lazy-senior-review`
 
 If something is missing, start Claude Code from `workspace/` itself. Updating the workflow is a `git pull` in `ai-workflow/`; the symlinks pick it up.
+
+### Jira and Notion
+
+Agents **read** Jira and Notion (tickets, acceptance criteria, linked pages) but never write to them. Writing is blocked in `.claude/settings.json`; anything that should be posted, the agent drafts for you to post.
+
+| Who | Reads |
+|---|---|
+| `lazy-architect` | The ticket: acceptance criteria become *proposed* behaviour rows |
+| `skeptic`, `lazy-senior-review` | The ticket: the change is checked against its acceptance criteria |
+| `junior` | Broad JQL and Notion searches |
+
+Each of us signs in to the Atlassian and Notion MCP servers with our own account. The server names must be `atlassian` and `claude_ai_Notion` (the claude.ai Notion connector) for the tool names in the agent files and deny list to match. Check with `/mcp` after setting them up.
 
 **Prefer it everywhere?** Copy or symlink `.claude/skills/*` and `.claude/agents/*` into `~/.claude/` instead. Then they're available in every project, not just this workspace.
 
@@ -125,6 +138,7 @@ Small change? Skip the plan and go straight to `/tdd <what you want>`. No logic 
 /tdd fix: expiry date before manufacture date is accepted
 /lazy-senior-review branch
 Use the junior agent to find every place that dispatches saveBatch
+Ask mch1-scout: does MCH1 have batch deviation recording?
 Use the skeptic agent on my uncommitted changes. The requirement was: …
 ```
 

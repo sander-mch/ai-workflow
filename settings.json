@@ -11,5 +11,26 @@
             ]
         }
         ]
+    }, 
+    "permissions": {
+        "deny": [
+            "mcp__atlassian__createJiraIssue",
+            "mcp__atlassian__editJiraIssue",
+            "mcp__atlassian__transitionJiraIssue",
+            "mcp__atlassian__addCommentToJiraIssue",
+            "mcp__atlassian__addWorklogToJiraIssue",
+            "mcp__atlassian__createIssueLink",
+            "mcp__atlassian__createConfluencePage",
+            "mcp__atlassian__updateConfluencePage",
+            "mcp__atlassian__createConfluenceFooterComment",
+            "mcp__atlassian__createConfluenceInlineComment",
+            "mcp__claude_ai_Notion__notion-create-pages",
+            "mcp__claude_ai_Notion__notion-update-page",
+            "mcp__claude_ai_Notion__notion-move-pages",
+            "mcp__claude_ai_Notion__notion-duplicate-page",
+            "mcp__claude_ai_Notion__notion-create-database",
+            "mcp__claude_ai_Notion__notion-update-database",
+            "mcp__claude_ai_Notion__notion-create-comment"
+        ]
     }
 }
