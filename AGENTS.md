@@ -34,6 +34,7 @@ Don't rewrite or reformat code unrelated to the task. Don't edit generated files
 - **Tests:** always run tests through the `tester` agent, never directly. Give it the command and the spec files to focus on. Trust its RESULT line, not your reading of the code.
 - **Lookups:** use the `junior` agent for broad searches across many files, reading and summarising several files, web or docs lookups, and lint/type-check runs. Do a single obvious grep or one-file read yourself.
 - **Fixes stay with you:** `junior`, `tester` and `skeptic` only report. Apply changes yourself, then re-run `tester` or `junior` to confirm.
+
 ## Jira and Notion
  
 - **Read freely:** tickets, acceptance criteria, linked Notion pages. Fetch a known ticket yourself; hand broad Notion or JQL searches to `junior`.

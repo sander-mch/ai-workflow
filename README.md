@@ -19,9 +19,10 @@ workspace/                     ← start Claude Code here for cross-repo work
 │   ├── CLAUDE.md              imports AGENTS.md for Claude Code
 │   └── .claude/
 │       ├── skills/
-│       │   ├── lazy-architect/   SKILL.md + template.md
+│       │   ├── architect/   SKILL.md + template.md
 │       │   ├── tdd/              SKILL.md
-│       │   └── lazy-senior-review/ SKILL.md
+│       │   ├── lazy-senior/      SKILL.md
+│       │   └── review/ SKILL.md
 │       └── agents/
 │           ├── junior.md
 │           ├── tester.md
@@ -44,7 +45,7 @@ ln -s ai-workflow/CLAUDE.md CLAUDE.md
 
 Then start Claude Code in `workspace/` (or in one of the repos below it) and check:
 - `/agents` lists `junior`, `tester` and `skeptic`
-- typing `/` shows `lazy-architect`, `tdd` and `lazy-senior-review`
+- typing `/` shows `architect`, `tdd` and `review`
 
 If something is missing, start Claude Code from `workspace/` itself. Updating the workflow is a `git pull` in `ai-workflow/`; the symlinks pick it up.
 
@@ -54,8 +55,8 @@ Agents **read** Jira and Notion (tickets, acceptance criteria, linked pages) but
 
 | Who | Reads |
 |---|---|
-| `lazy-architect` | The ticket: acceptance criteria become *proposed* behaviour rows |
-| `skeptic`, `lazy-senior-review` | The ticket: the change is checked against its acceptance criteria |
+| `architect` | The ticket: acceptance criteria become *proposed* behaviour rows |
+| `skeptic`, `review` | The ticket: the change is checked against its acceptance criteria |
 | `junior` | Broad JQL and Notion searches |
 
 Each of us signs in to the Atlassian and Notion MCP servers with our own account. The server names must be `atlassian` and `claude_ai_Notion` (the claude.ai Notion connector) for the tool names in the agent files and deny list to match. Check with `/mcp` after setting them up.
@@ -68,7 +69,7 @@ Each of us signs in to the Atlassian and Notion MCP servers with our own account
 
 | Layer | File | Loaded | Holds |
 |---|---|---|---|
-| Workspace rules | `AGENTS.md` (via `CLAUDE.md`) | Always | How we work: lazy senior, GMP safety, delegation, review |
+| Workspace rules | `AGENTS.md` (via `CLAUDE.md`) | Always | How we work: Lazy senior, GMP safety, delegation, review |
 | Repo rules | `<repo>/CLAUDE.md` | When working in that repo | Commands, folder map, conventions for that stack |
 | Skills | `.claude/skills/*/SKILL.md` | Only when triggered or called with `/name` | Procedures: plan, build test-first, review |
 | Agents | `.claude/agents/*.md` | Only inside that agent's own fresh context | One isolated job each |
@@ -108,7 +109,7 @@ Helpers only report. All changes go through the main agent, so there's one place
 ### 3. The flow: plan → build → verify → review
 
 ```
-/lazy-architect ──► docs/design/<feature>.md
+/architect ──► docs/design/<feature>.md
                         │  (one page: non-goals, reuse, seams,
                         │   behaviour table, slices)
                         ▼
@@ -118,27 +119,31 @@ Helpers only report. All changes go through the main agent, so there's one place
                     skeptic ──► MUST FIX → new failing test → fix
                         │
                         ▼
-/lazy-senior-review ──► numbered findings, verdict, lean
+/review ──► numbered findings, verdict, lean
+
+
+/lazy-senior ──► quick changes
 ```
 
 | Step | Use | Output |
 |---|---|---|
-| Plan | `/lazy-architect <feature>` | A one-page design doc. Skipped for changes one prompt can describe. |
+| Plan | `/architect <feature>` | A one-page design doc. Skipped for changes one prompt can describe. |
 | Build | `/tdd implement slice N of docs/design/<feature>.md` | Tests and code, one vertical slice at a time |
 | Verify | automatic inside `/tdd` | `tester` confirms red then green; `skeptic` reviews cold |
-| Review | `/lazy-senior-review` | Plain-English report for a PR, branch or commit |
+| Review | `/review` | Plain-English report for a PR, branch or commit |
 
 Small change? Skip the plan and go straight to `/tdd <what you want>`. No logic (styling, copy, config)? Just ask; no skill needed.
+Small change no tdd? Use `/lazy-senior <what you want>`.
 
 ## Everyday prompts
 
 ```text
-/lazy-architect operators can record a deviation during a batch step
+/architect operators can record a deviation during a batch step
 /tdd implement slice 1 of docs/design/batch-deviation.md
 /tdd fix: expiry date before manufacture date is accepted
-/lazy-senior-review branch
+/review branch
+/lazy-senior add feature <x>
 Use the junior agent to find every place that dispatches saveBatch
-Ask mch1-scout: does MCH1 have batch deviation recording?
 Use the skeptic agent on my uncommitted changes. The requirement was: …
 ```
 
