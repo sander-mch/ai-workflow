@@ -10,22 +10,26 @@ Clone this repo next to the others:
 
 ```
 workspace/                     ← start Claude Code here for cross-repo work
-├── .claude/      → ai-workflow/.claude      (symlink)
+├── .claude/                   real folder, made by setup.sh
+│   ├── skills/        → ai-workflow/skills          (symlink)
+│   ├── agents/        → ai-workflow/agents          (symlink)
+│   └── settings.json  → ai-workflow/settings.json   (symlink)
 ├── AGENTS.md     → ai-workflow/AGENTS.md    (symlink)
 ├── CLAUDE.md     → ai-workflow/CLAUDE.md    (symlink)
 ├── ai-workflow/               ← this repo
 │   ├── README.md
+│   ├── setup.sh               creates the links above
 │   ├── AGENTS.md              shared always-on rules
 │   ├── CLAUDE.md              imports AGENTS.md for Claude Code
-│   └── .claude/
-│       ├── skills/
-│       │   ├── architect/   SKILL.md + template.md
-│       │   ├── build/            SKILL.md
-│       │   └── review/ SKILL.md
-│       └── agents/
-│           ├── junior.md
-│           ├── tester.md
-│           └── skeptic.md
+│   ├── settings.json          Jira/Notion write deny list, hooks
+│   ├── skills/
+│   │   ├── architect/         SKILL.md + template.md
+│   │   ├── build/             SKILL.md
+│   │   └── review/            SKILL.md
+│   └── agents/
+│       ├── junior.md
+│       ├── tester.md
+│       └── skeptic.md
 ├── frontend/                  has its own CLAUDE.md (commands, conventions)
 ├── backend/                   has its own CLAUDE.md
 ├── mes-agentic-harness/       has its own CLAUDE.md
@@ -34,23 +38,26 @@ workspace/                     ← start Claude Code here for cross-repo work
 
 ## Setup
 
-From the `workspace/` folder:
+Clone `ai-workflow`, `frontend`, `backend` and `mes-agentic-harness` into the same `workspace/` folder. Agents find the repos by folder name. If you keep a repo somewhere else, link it in instead: `ln -s ~/code/frontend workspace/frontend`.
+
+Then run once (from anywhere):
 
 ```bash
-ln -s ai-workflow/.claude .claude
-ln -s ai-workflow/AGENTS.md AGENTS.md
-ln -s ai-workflow/CLAUDE.md CLAUDE.md
+bash ai-workflow/setup.sh
 ```
+
+It creates `workspace/.claude/` and links `skills`, `agents` and `settings.json` into it, plus `AGENTS.md` and `CLAUDE.md` into `workspace/`. Run it once on a fresh workspace.
 
 Then start Claude Code in `workspace/` (or in one of the repos below it) and check:
 - `/agents` lists `junior`, `tester` and `skeptic`
 - typing `/` shows `architect`, `build` and `review`
+- `/permissions` lists the Jira and Notion write tools as denied
 
 If something is missing, start Claude Code from `workspace/` itself. Updating the workflow is a `git pull` in `ai-workflow/`; the symlinks pick it up.
 
 ### Jira and Notion
 
-Agents **read** Jira and Notion (tickets, acceptance criteria, linked pages) but never write to them. Writing is blocked in `.claude/settings.json`; anything that should be posted, the agent drafts for you to post.
+Agents **read** Jira and Notion (tickets, acceptance criteria, linked pages) but never write to them. Writing is blocked in `settings.json`; anything that should be posted, the agent drafts for you to post.
 
 | Who | Reads |
 |---|---|
@@ -60,7 +67,7 @@ Agents **read** Jira and Notion (tickets, acceptance criteria, linked pages) but
 
 Each of us signs in to the Atlassian and Notion MCP servers with our own account. The server names must be `atlassian` and `claude_ai_Notion` (the claude.ai Notion connector) for the tool names in the agent files and deny list to match. Check with `/mcp` after setting them up.
 
-**Prefer it everywhere?** Copy or symlink `.claude/skills/*` and `.claude/agents/*` into `~/.claude/` instead. Then they're available in every project, not just this workspace.
+**Prefer it everywhere?** Copy or symlink `skills/*` and `agents/*` into `~/.claude/skills/` and `~/.claude/agents/` instead. Then they're available in every project, not just this workspace.
 
 ## The hierarchy
 
@@ -70,8 +77,8 @@ Each of us signs in to the Atlassian and Notion MCP servers with our own account
 |---|---|---|---|
 | Workspace rules | `AGENTS.md` (via `CLAUDE.md`) | Always | How we work: Lazy senior, GMP safety, delegation, review |
 | Repo rules | `<repo>/CLAUDE.md` | When working in that repo | Commands, folder map, conventions for that stack |
-| Skills | `.claude/skills/*/SKILL.md` | Only when triggered or called with `/name` | Procedures: plan, build with proof scaled to risk, review |
-| Agents | `.claude/agents/*.md` | Only inside that agent's own fresh context | One isolated job each |
+| Skills | `skills/*/SKILL.md` | Only when triggered or called with `/name` | Procedures: plan, build with proof scaled to risk, review |
+| Agents | `agents/*.md` | Only inside that agent's own fresh context | One isolated job each |
 
 General rule: **always-on principles in `AGENTS.md`, stack details in the repo's `CLAUDE.md`, procedures in skills, isolated jobs in agents.** Don't put the same rule in two layers.
 
