@@ -25,10 +25,12 @@ workspace/                     ← start Claude Code here for cross-repo work
 │       └── agents/
 │           ├── junior.md
 │           ├── tester.md
-│           └── skeptic.md
+│           ├── skeptic.md
+│           └── mch1-scout.md
 ├── frontend/                  has its own CLAUDE.md (commands, conventions)
 ├── backend/                   has its own CLAUDE.md
-└── mes-agentic-harness/       has its own CLAUDE.md
+├── mes-agentic-harness/       has its own CLAUDE.md
+└── mch1/                      legacy system, read-only reference
 ```
 
 ## Setup
@@ -46,6 +48,30 @@ Then start Claude Code in `workspace/` (or in one of the repos below it) and che
 - typing `/` shows `lazy-architect`, `tdd` and `lazy-senior-review`
 
 If something is missing, start Claude Code from `workspace/` itself. Updating the workflow is a `git pull` in `ai-workflow/`; the symlinks pick it up.
+
+### Legacy MCH1
+
+The `mch1-scout` agent expects MCH1 at `workspace/mch1/`. Your clone can live anywhere; link it in:
+
+```bash
+# macOS / Linux, from workspace/
+ln -s /path/to/your/mch1 mch1
+```
+
+```powershell
+# Windows, from workspace\ (a junction needs no admin rights)
+mklink /J mch1 C:\path\to\your\mch1
+```
+
+Can't link it? Set `MCH1_PATH` to your clone's folder instead; the agent falls back to that.
+
+If you start Claude Code inside a single repo (e.g. `frontend/`), `../mch1` is outside that project, so Claude may ask for permission each time it reads there. To avoid that, start in `workspace/`, or add the folder in your **personal** settings, `.claude/settings.local.json` in that repo:
+
+```json
+{ "permissions": { "additionalDirectories": ["../mch1"] } }
+```
+
+The map of the legacy code lives in `docs/mch1-map.md`. Update it when you learn where something lives.
 
 **Prefer it everywhere?** Copy or symlink `.claude/skills/*` and `.claude/agents/*` into `~/.claude/` instead. Then they're available in every project, not just this workspace.
 
@@ -89,6 +115,7 @@ General rule: **always-on principles in `AGENTS.md`, stack details in the repo's
 | `junior` | Haiku | Broad searches, reading several files, web/docs lookups, lint and type-check runs | Edits, `--fix`, opinions |
 | `tester` | Haiku | Runs the test command, reports PASS/FAIL/ERROR with verbatim output | Edits, suggests fixes |
 | `skeptic` | inherit | Independent correctness review: request vs code, fake tests, breaking inputs, broken callers | Sees the author's reasoning; edits |
+| `mch1-scout` | Sonnet | Finds how legacy MCH1 handled a feature: rules, validations, messages, edge cases, suspect quirks | Edits; copies legacy code |
 
 Helpers only report. All changes go through the main agent, so there's one place where decisions are made.
 

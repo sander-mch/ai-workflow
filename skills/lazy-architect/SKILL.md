@@ -15,6 +15,7 @@ Before the first question:
 - Find a similar existing feature and how it's built. That is the default pattern.
 - Find what can be reused: components, services, selectors, utils, Angular or browser features, installed dependencies.
 - Find the existing seams: public interfaces where this feature's behaviour would be observed.
+- If MCH1 might already do this, spawn the `mch1-scout` agent with the feature description. Put its findings in the **Legacy (MCH1)** section. Its rules, edge cases and messages are strong candidates for Behaviour rows, but each still needs the user's confirmation, and every SUSPECT item needs a keep-or-drop decision under Decisions.
 
 Then draft **Problem, Reuse and Seams** yourself from the request and the code. Never ask the user something the code can answer.
 
